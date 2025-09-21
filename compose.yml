@@ -1,0 +1,13 @@
+services:
+    example-ts:
+        build: .
+        image: example-ts
+        ports:
+            - 8000:8000
+
+networks:
+    example-ts-net:
+        name: example-ts-net
+        ipam:
+            config:
+                -   subnet: 172.16.238.0/24

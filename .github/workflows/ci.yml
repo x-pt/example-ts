@@ -1,0 +1,46 @@
+name: CI # Continuous Integration
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+    workflow_dispatch:
+
+
+jobs:
+    build-and-test:
+        name: Node.js-${{ matrix.node }} on ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                node: [ 20, 22 ]
+                os:
+                    - ubuntu-latest
+                    - windows-latest
+                    - macos-latest
+
+            fail-fast: false
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            -   uses: actions/checkout@v5
+            -   uses: pnpm/action-setup@v4
+                with:
+                    version: 10
+
+            -   name: Set up Node.js
+                uses: actions/setup-node@v5
+                with:
+                    node-version: ${{ matrix.node }}
+                    # cache: "pnpm"
+
+            -   name: Build
+                run: |
+                    pnpm i
+                    pnpm build
+
+            -   name: Test
+                run: pnpm test
+
